@@ -277,7 +277,6 @@ public abstract class AbstractJxrReport
         jxr.setInputEncoding( inputEncoding );
         jxr.setLocale( locale );
         jxr.setOutputEncoding( getOutputEncoding() );
-        jxr.setRevision( "HEAD" );
         jxr.setJavadocLinkDir( getJavadocLocation() );
         // Set include/exclude patterns on the jxr instance
         if ( excludes != null && !excludes.isEmpty() )

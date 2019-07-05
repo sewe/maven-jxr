@@ -1,5 +1,33 @@
 package org.apache.maven.jxr;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Serializable;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 /*
  * CodeViewer.java
  * CoolServlets.com
@@ -40,34 +68,6 @@ import org.apache.maven.jxr.pacman.PackageType;
 import org.apache.maven.jxr.util.SimpleWordTokenizer;
 import org.apache.maven.jxr.util.StringEntry;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 /**
  * Syntax highlights java by turning it into html. A codeviewer object is created and then keeps state as lines are
  * passed in. Each line passed in as java test, is returned as syntax highlighted html text. Users of the class can set
@@ -95,10 +95,10 @@ import javax.inject.Singleton;
  *                                  importFilter
  * </pre>
  */
-@Named
+@Named( "java" )
 @Singleton
 public class JavaCodeTransform
-    implements Serializable
+    implements Serializable, CodeTransformer
 {
     // ----------------------------------------------------------------------
     // public fields
@@ -191,11 +191,6 @@ public class JavaCodeTransform
     private Path currentFilename = null;
 
     /**
-     * The current CVS revision of the currently transformed document
-     */
-    private String revision = null;
-
-    /**
      * The input encoding
      */
     private String inputEncoding = null;
@@ -285,6 +280,18 @@ public class JavaCodeTransform
         reservedWords.put( "implements", "implements" );
     }
 
+    @Override
+    public boolean canTransform( String fileExtension )
+    {
+        return ".java".equals( fileExtension );
+    }
+    
+    @Override
+    public Set<String> getDefaultIncludes()
+    {
+        return Collections.singleton( "**/*.java" );
+    }
+    
     // ----------------------------------------------------------------------
     // public methods
     // ----------------------------------------------------------------------
@@ -393,19 +400,17 @@ public class JavaCodeTransform
      * @param inputEncoding String
      * @param outputEncoding String
      * @param javadocLinkDir String
-     * @param revision String
      * @param bottom string
      * @throws IOException
      */
     private void transform( Reader sourceReader, Writer destWriter, Locale locale, String inputEncoding,
-                                 String outputEncoding, Path javadocLinkDir, String revision, String bottom )
+                                 String outputEncoding, Path javadocLinkDir, String bottom )
         throws IOException
     {
         this.locale = locale;
         this.inputEncoding = inputEncoding;
         this.outputEncoding = outputEncoding;
         this.javadocLinkDir = javadocLinkDir;
-        this.revision = revision;
 
         BufferedReader in = new BufferedReader( sourceReader );
 
@@ -443,12 +448,12 @@ public class JavaCodeTransform
      * @param inputEncoding String
      * @param outputEncoding String
      * @param javadocLinkDir String
-     * @param revision String
      * @param bottom TODO
      * @throws IOException
      */
+    @Override
     public final void transform( Path sourcefile, Path destfile, Locale locale, String inputEncoding,
-                                 String outputEncoding, Path javadocLinkDir, String revision, String bottom )
+                                 String outputEncoding, Path javadocLinkDir, String bottom )
         throws IOException
     {
         this.setCurrentFilename( sourcefile );
@@ -458,7 +463,7 @@ public class JavaCodeTransform
 
         try ( Reader fr = getReader( sourcefile, inputEncoding ); Writer fw = getWriter( destfile, outputEncoding ) )
         {
-            transform( fr, fw, locale, inputEncoding, outputEncoding, javadocLinkDir, revision, bottom );
+            transform( fr, fw, locale, inputEncoding, outputEncoding, javadocLinkDir, bottom );
         }
         catch ( RuntimeException e )
         {
@@ -603,16 +608,6 @@ public class JavaCodeTransform
         }
 
         return line;
-    }
-
-    /**
-     * The current revision of the CVS module
-     *
-     * @return String
-     */
-    public final String getRevision()
-    {
-        return this.revision;
     }
 
     /**

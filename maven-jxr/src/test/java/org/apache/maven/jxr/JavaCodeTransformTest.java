@@ -34,7 +34,7 @@ import org.codehaus.plexus.PlexusTestCase;
 public class JavaCodeTransformTest extends PlexusTestCase
 {
     /** JavaCodeTransform object under test */
-    private JavaCodeTransform codeTransform;
+    private CodeTransformer codeTransform;
 
     @Override
     protected void customizeContainerConfiguration( ContainerConfiguration configuration )
@@ -65,7 +65,7 @@ public class JavaCodeTransformTest extends PlexusTestCase
         multiline comment text
 
         */ codeTransform.transform( sourceFile, Paths.get( "target/JavaCodeTransformTest.html" ) // additional comment
-           , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "", "" );
+           , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "" );
         assertTrue( /**/ Files.exists( Paths.get( "target/JavaCodeTransformTest.html" ) ) );
     }
 
@@ -79,7 +79,7 @@ public class JavaCodeTransformTest extends PlexusTestCase
         assertTrue( Files.exists( sourceFile ) );
 
         codeTransform.transform( sourceFile, Paths.get( "target/EmptyClass.html" )
-            , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "", "" );
+            , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "" );
         assertTrue( Files.exists( Paths.get( "target/EmptyClass.html" ) ) );
     }
 
@@ -93,7 +93,7 @@ public class JavaCodeTransformTest extends PlexusTestCase
         assertTrue( Files.exists( sourceFile ) );
 
         codeTransform.transform( sourceFile, Paths.get( "target/ClassWithLink.html" )
-            , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "", "" );
+            , Locale.ENGLISH, "ISO-8859-1", "ISO-8859-1", Paths.get( "." ), "" );
         assertTrue( Files.exists( Paths.get( "target/ClassWithLink.html" ) ) );
 
         byte[] bytes = Files.readAllBytes( Paths.get( "target/ClassWithLink.html" ) );
