@@ -92,7 +92,7 @@ public class JXR extends AbstractLogEnabled
      * @param bottom
      * @throws IOException
      */
-    public void processPath( PackageManager packageManager, Path sourceDir, String bottom )
+    public void processPath( Path sourceDir, String bottom )
         throws IOException
     {
         
@@ -226,7 +226,7 @@ public class JXR extends AbstractLogEnabled
 
             pkgmgr.process( path );
 
-            processPath( pkgmgr, path, bottom );
+            processPath( path, bottom );
         }
 
         // once we have all the source files xref'd, create the index pages
