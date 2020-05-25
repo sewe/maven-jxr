@@ -32,14 +32,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * Given a list of directories, parse them out and store them as rendered
  * packages, classes, imports, etc.
  */
 @Named
-@Singleton
 public class PackageManager extends AbstractLogEnabled
 {
     @Inject

@@ -66,7 +66,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * Syntax highlights java by turning it into html. A codeviewer object is created and then keeps state as lines are
@@ -96,7 +95,6 @@ import javax.inject.Singleton;
  * </pre>
  */
 @Named
-@Singleton
 public class JavaCodeTransform
     implements Serializable
 {

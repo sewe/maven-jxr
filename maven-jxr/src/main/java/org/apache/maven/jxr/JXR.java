@@ -32,7 +32,6 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * Main entry point into Maven used to kick off the XReference code building.
@@ -41,7 +40,6 @@ import javax.inject.Singleton;
  * @version $Id$
  */
 @Named
-@Singleton
 public class JXR extends AbstractLogEnabled
 {
     @Inject

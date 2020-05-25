@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * <p>
@@ -39,7 +38,6 @@ import javax.inject.Singleton;
  * Alexandria is running. </p>
  */
 @Named
-@Singleton
 public class FileManager
 {
     private Map<Path, JavaFile> files = new HashMap<>();
